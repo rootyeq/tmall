@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 定义mapper接口路径 -->
+<mapper namespace="com.login.tmall.dao.PropertyMapper">
+
+    <resultMap id="propertyMap" type="property">
+        <id property="property_id" column="property_id"/>
+        <result property="property_name" column="property_name"/>
+        <association property="property_category" javaType="com.login.tmall.entity.Category">
+            <id property="category_id" column="property_category_id"/>
+        </association>
+    </resultMap>
+<select id="select" resultMap="propertyMap">
+    select property_id,property_name,property_category_id from property
+    <if test="property != null">
+        <where>
+            <if test="property.property_name != null">property_name LIKE concat('%',#{property.property_name},'%')</if>
+            <if test="property.property_category != null">
+                <if test="property.property_category.category_id != null">property_category_id = #{property.property_category.category_id}</if>
+            </if>
+        </where>
+    </if>
+    <if test="pageUtil != null">
+        LIMIT #{pageUtil.pageStart},#{pageUtil.count}
+    </if>
+</select>
+
+
+
+</mapper>

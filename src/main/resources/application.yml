@@ -1,0 +1,77 @@
+# Spring配置
+spring:
+  devtools:
+    restart:
+      enabled: true  #设置开启热部署
+      additional-paths: src/main/java #重启目录
+      exclude: WEB-INF/**
+  freemarker:
+    cache: false    #页面不加载缓存，修改即时生效
+  # Servlet配置
+  servlet:
+    # Multipart配置
+    multipart:
+      # 最大文件大小
+      max-file-size: 4MB
+  # DataSource配置
+  datasource:
+    # 驱动类名
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 数据库URL
+    url: jdbc:mysql://localhost:3306/tmalldemodb?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+    # 用户名
+    username: root
+    # 密码
+    password: 123456789
+  # Application配置
+  application:
+    # 应用名称
+    name: tmall
+  # MVC配置
+  mvc:
+    # 视图前缀
+    view:
+      prefix: /WEB-INF/page/
+      # 视图后缀
+      suffix: .jsp
+  # 配置文件
+  profiles:
+    # 激活的配置文件
+    active: dev
+
+# Server配置
+server:
+  # Servlet配置
+  servlet:
+    # 编码配置
+    encoding:
+      # 字符集
+      charset: UTF-8
+      # 是否启用
+      enabled: true
+      # 是否强制
+      force: true
+    # 上下文路径
+    context-path:
+            /tmall
+
+# MyBatis配置
+mybatis:
+  # Mapper配置
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  # 类型别名包
+  type-aliases-package: com.login.tmall.entity
+
+
+#  configuration:
+#    map-underscore-to-camel-case: true
+
+
+logging:
+  level:
+    com.login.tmall: debug
+
+
+
+
+

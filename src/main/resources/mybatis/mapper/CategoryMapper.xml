@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 定义mapper接口路径 -->
+<mapper namespace="com.login.tmall.dao.CategoryMapper">
+<!--    增加产品列表-->
+    <insert id="insertOne" parameterType="category">
+        INSERT category (category_id,category_name,category_image_src)
+            VALUES (
+            null,
+        #{category.category_name},
+        #{category.category_image_src})
+    </insert>
+
+    <update id="updateCategory" parameterType="category">
+        UPDATE category
+        <set>
+            <if test="category.category_name != null">category_name = #{category.category_name},</if>
+            <if test="category.category_image_src != null">category_image_src = #{category.category_image_src}</if>
+        </set>
+        <where>
+            category_id = #{category.category_id}
+        </where>
+    </update>
+    <delete id="deleteCategory" parameterType="category">
+        DELETE FROM category where category_id = #{category_id}
+
+    </delete>
+
+    <!--id的值保证Mapper接口的方法名一值-->
+    <select id="getCategoryList" resultType="Category">
+        select * from category
+    </select>
+
+
+    <select id="getProductListByCategory" resultType="Category">
+        select * from category
+    </select>
+    <select id="getCategoryById" resultType="Category">
+        select category_id, category_name,category_image_src from category where category_id =#{category_id}
+    </select>
+
+    <select id="selectTotal" resultType="int" >
+        select count(category_id) from category
+    </select>
+
+
+    <select id="selectPage" resultType="category">
+        select category_id,category_name,category_image_src from category
+        <where>
+            <if test="category_name != null">category_name LIKE concat('%',#{category_name},'%')</if>
+        </where>
+        <if test="pageUtil != null">
+            LIMIT #{pageUtil.pageStart},#{pageUtil.count}
+        </if>
+    </select>
+
+</mapper>

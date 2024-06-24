@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 定义mapper接口路径 -->
+<mapper namespace="com.login.tmall.dao.ProductOrderItemMapper">
+
+    <resultMap id="productOrderItemMap" type="productOrderItem">
+        <id property="productOrderItem_id" column="productOrderItem_id"/>
+        <result property="productOrderItem_number" column="productOrderItem_number"/>
+        <result property="productOrderItem_price" column="productOrderItem_price"/>
+        <result property="productOrderItem_userMessage" column="productOrderItem_userMessage"/>
+        <association property="productOrderItem_product" javaType="com.login.tmall.entity.Product">
+            <id property="product_id" column="productOrderItem_product_id"/>
+        </association>
+        <association property="productOrderItem_order" javaType="com.login.tmall.entity.ProductOrder">
+            <id property="productOrder_id" column="productOrderItem_order_id"/>
+        </association>
+        <association property="productOrderItem_user" javaType="com.login.tmall.entity.User">
+            <id property="user_id" column="productOrderItem_user_id"/>
+        </association>
+    </resultMap>
+    <insert id="insertOne" parameterType="productOrderItem">
+        INSERT productOrderItem
+    (productOrderItem_id,productOrderItem_number,productOrderItem_price,productOrderItem_product_id,productOrderItem_order_id,productOrderItem_user_id,productOrderItem_userMessage)
+    VALUES (
+               null,
+        #{productOrderItem_number},
+        #{productOrderItem_price},
+        #{productOrderItem_product.product_id},
+        #{productOrderItem_order.productOrder_id},
+        #{productOrderItem_user.user_id},
+        #{productOrderItem_userMessage})
+    </insert>
+
+
+    <select id="selectByUserId" resultMap="productOrderItemMap">
+        SELECT
+        *
+        FROM productOrderItem
+        <where>
+            productOrderItem_user_id = #{user_id} and productOrderItem_order_id is null
+        </where>
+    </select>
+
+    <select id="selectCountByUserId" resultType="productOrderItem">
+        SELECT
+        count(*)
+        FROM productOrderItem
+        <where>
+            productOrderItem_user_id = #{user_id} and productOrderItem_order_id is null
+        </where>
+    </select>
+
+    <select id="selectByOrderItemId" resultMap="productOrderItemMap">
+        select * from productorderitem where productorderitem_id= #{product_order_item_id}
+    </select>
+
+    <update id="updateProductOrderItem" parameterType="productOrderItem">
+        update productorderitem set productOrderItem_number=#{productOrderItem_number},productOrderItem_price=#{productOrderItem_price} where productOrderItem_id=#{productOrderItem_id}
+
+    </update>
+    <delete id="deleteOrderItem" parameterType="productOrderItem">
+        delete from productorderitem where productorderitem_id = #{productOrderItem_id};
+    </delete>
+
+</mapper>

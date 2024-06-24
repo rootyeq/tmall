@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 定义mapper接口路径 -->
+<mapper namespace="com.login.tmall.dao.AddressMapper">
+    <!--id的值保证Mapper接口的方法名一值-->
+    <resultMap id="address" type="com.login.tmall.entity.Address">
+        <id property="address_areaId" column="address_areaId"/>
+        <result property="address_name" column="address_name"/>
+        <association property="address_regionId" javaType="com.login.tmall.entity.Address">
+            <id property="address_areaId" column="address_regionId"/>
+        </association>
+    </resultMap>
+
+    <select id="getAddressList" resultMap="address">
+        SELECT address_areaId,address_name,address_regionId FROM address
+        <where>
+<!--            <if test="address_name != null">-->
+<!--                address_name LIKE concat('%',#{address_name},'%')-->
+<!--            </if>-->
+            <if test="address_regionId != null">
+                and address_regionId = #{address_regionId} and address_areaId != address_regionId
+            </if>
+        </where>
+    </select>
+
+    <select id="selectRoot" resultMap="address">
+        SELECT address_areaId,address_name,address_regionId FROM address
+        <where>
+            address_areaId = address_regionId
+        </where>
+    </select>
+
+
+
+</mapper>

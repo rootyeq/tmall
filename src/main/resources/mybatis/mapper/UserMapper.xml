@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 定义mapper接口路径 -->
+<mapper namespace="com.login.tmall.dao.UserMapper">
+    <resultMap id="userMap" type="user">
+        <id property="user_id" column="user_id"/>
+        <result property="user_name" column="user_name"/>
+        <result property="user_nickname" column="user_nickname"/>
+        <result property="user_password" column="user_password"/>
+        <result property="user_realname" column="user_realname"/>
+        <result property="user_gender" column="user_gender"/>
+        <result property="user_birthday" column="user_birthday"/>
+        <result property="user_profile_picture_src" column="user_profile_picture_src"/>
+        <association property="user_address" javaType="com.login.tmall.entity.Address">
+            <id property="address_areaId" column="user_address"/>
+        </association>
+        <association property="user_homeplace" javaType="com.login.tmall.entity.Address">
+            <id property="address_areaId" column="user_homeplace"/>
+        </association>
+    </resultMap>
+    <!--id的值保证Mapper接口的方法名一值-->
+    <select id="getUserByUserAndPassword" resultType="user">
+        select * from user where user_name= #{username} and user_password = #{password}
+    </select>
+    <insert id="insertOne" parameterType="user">
+        INSERT INTO user(user_id,user_name,user_nickname,user_password,user_realname,user_gender,user_birthday,user_profile_picture_src,user_address,user_homeplace)
+        VALUES (
+                   null,
+                   #{user_name},
+                   #{user_nickname},
+                   #{user_password},
+                   #{user_realname},
+                   #{user_gender},
+                   #{user_birthday},
+                   #{user_profile_picture_src},
+                   #{user_address.address_areaId},
+                   #{user_homeplace.address_areaId})
+    </insert>
+<select id="getUser" resultType="user">
+    select * from user
+    <where>
+        <if test="username != null">
+            user_name = #{username}
+        </if>
+        <if test="password != null">
+            and user_password = #{password}
+        </if>
+    </where>
+</select>
+
+
+    <select id="AdminSelect" resultMap="userMap">
+        SELECT user_id,user_name,user_nickname,user_password,user_realname,user_gender,user_birthday,user_profile_picture_src,user_address,user_homeplace FROM user
+        <if test="user != null">
+            <where>
+                <if test="user.user_name != null">
+                    (user_name LIKE concat('%',#{user.user_name},'%') or user_nickname LIKE concat('%',#{user.user_name},'%'))
+                </if>
+                <if test="user.user_gender != null">
+                    and user_gender = #{user.user_gender}
+                </if>
+            </where>
+        </if>
+        <if test="orderUtil != null">
+            ORDER BY ${orderUtil.orderBy}<if test="orderUtil.isDesc">desc </if>
+        </if>
+        <if test="pageUtil != null">
+            LIMIT #{pageUtil.pageStart},#{pageUtil.count}
+        </if>
+    </select>
+
+
+</mapper>
